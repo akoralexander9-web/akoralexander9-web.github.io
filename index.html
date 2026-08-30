@@ -120,6 +120,13 @@ img:hover {
 header .btn:.hover {
     background: #f4f4f4;
 }
+		.skills { padding: 50px 20px; max-width: 800px; margin: auto; }
+.skill { margin-bottom: 20px; }
+.skill-name { font-weight: 600; margin-bottom: 5px; }
+.skill-bar { background: #ddd; border-radius: 20px; height: 10px; overflow: hidden; }
+.skill-progress { height: 100%; background: #3498db; border-radius: 20px; width: 0; animation: fillBar 2s forwards; }
+@keyframes fillBar { to { width: var(--width); } }
+body.dark .skill-bar { background: #333; }
   </style>
 </head>	
 <body>
@@ -136,7 +143,29 @@ header .btn:.hover {
         <h2>About Me</h2>
         <p>Hello! I'm Alexander, a passionate web developer from Kano.</p>
     </section>
+             <section class="skills">
+  <h2>My Skills</h2>
+  
+  <div class="skill">
+    <div class="skill-name">HTML</div>
+    <div class="skill-bar"><div class="skill-progress" style="--width: 90%"></div></div>
+  </div>
 
+  <div class="skill">
+    <div class="skill-name">CSS</div>
+    <div class="skill-bar"><div class="skill-progress" style="--width: 85%"></div></div>
+  </div>
+
+  <div class="skill">
+    <div class="skill-name">JavaScript</div>
+    <div class="skill-bar"><div class="skill-progress" style="--width: 70%"></div></div>
+  </div>
+
+  <div class="skill">
+    <div class="skill-name">Git & GitHub</div>
+    <div class="skill-bar"><div class="skill-progress" style="--width: 80%"></div></div>
+  </div>
+</section>
     <section class="projects">
         <h2>My Projects</h2>
         
@@ -151,6 +180,7 @@ header .btn:.hover {
     <a href="calculator.html" class="btn">View Project</a>
 </div>
     </section>
+	     
 <section class="contact">
     <h2>Contact Me</h2>
     <p>Let's work together! Connect with me:</p>
