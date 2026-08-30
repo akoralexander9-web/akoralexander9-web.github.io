@@ -161,34 +161,6 @@ body.dark .contact-form input, body.dark .contact-form textarea {
 .project.hide { display: none; }
 body.dark .filter-btn { border-color: #3498db; color: #3498db; }
 body.dark .filter-btn.active { background: #3498db; color: #121212; }
-		
-	       function openCalc() { 
-  document.querySelector('.calc-popup').style.display = 'block';
-  document.querySelector('.calc-overlay').style.display = 'block';
-}
-function closeCalc() { 
-  document.querySelector('.calc-popup').style.display = 'none';
-  document.querySelector('.calc-overlay').style.display = 'none';
-}
-function calcInput(val) { document.getElementById('calc-display').value += val; }
-function calcClear() { document.getElementById('calc-display').value = ''; }
-function calcDelete() { 
-  let v = document.getElementById('calc-display').value;
-  document.getElementById('calc-display').value = v.slice(0, -1);
-}
-function calcEqual() { 
-  try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); }
-  catch { alert('Invalid calculation'); }
-}
-	
-	          .calc-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; width: 300px; }
-.calc-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-.calc-popup input { width: 100%; height: 50px; font-size: 24px; text-align: right; margin-bottom: 10px; }
-.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.calc-buttons button { padding: 15px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; background: #eee; }
-.calc-buttons button:hover { background: #ddd; }
-body.dark .calc-popup { background: #2a2a2a; color: white; }
-body.dark .calc-buttons button { background: #444; color: white; }
 	</style>
 </head>	
 <body>
@@ -242,12 +214,6 @@ body.dark .calc-buttons button { background: #444; color: white; }
       <h3>Portfolio Website</h3>
       <p>The website you're looking at right now! Built with HTML and CSS.</p>
     </div>
-
-    <div class="project" data-category="app">
-<h3>Calculator App</h3>
-<p>A simple calculator built with HTML, CSS, and JavaScript. It can do +, -, *, /.</p>
-<button onclick="openCalc()" class="btn" style="margin-top:10px;">Try Calculator</button>
-</div>
            
     <div class="project" data-category="web">
       <h3>Landing Page</h3>
@@ -286,84 +252,10 @@ body.dark .calc-buttons button { background: #444; color: white; }
         toggle.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
     });
     </script>
- <p>© 2026 Alexander. Made with ❤️</p>    
+ <p>© 2026 Alexander. Made with Trust</p>    
     <script>
 const filterBtns = document.querySelectorAll('.filter-btn');
 const projects = document.querySelectorAll('.project');
-
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-<div class="calc-overlay" onclick="closeCalc()"></div>
-<div class="calc-popup">
-  <input type="text" id="calc-display" disabled>
-  <div class="calc-buttons">
-    <button onclick="calcClear()">C</button>
-    <button onclick="calcInput('/')">/</button>
-    <button onclick="calcInput('*')">*</button>
-    <button onclick="calcDelete()">⌫</button>
-    <button onclick="calcInput('7')">7</button>
-    <button onclick="calcInput('8')">8</button>
-    <button onclick="calcInput('9')">9</button>
-    <button onclick="calcInput('-')">-</button>
-    <button onclick="calcInput('4')">4</button>
-    <button onclick="calcInput('5')">5</button>
-    <button onclick="calcInput('6')">6</button>
-    <button onclick="calcInput('+')">+</button>
-    <button onclick="calcInput('1')">1</button>
-    <button onclick="calcInput('2')">2</button>
-    <button onclick="calcInput('3')">3</button>
-    <button onclick="calcEqual()" style="background:#3498db; color:white;">=</button>
-    <button onclick="calcInput('0')" style="grid-column: span 2;">0</button>
-    <button onclick="calcInput('.')">.</button>
-  </div>
-  <button onclick="closeCalc()" style="width:100%; margin-top:10px;">Close</button>
-</div>
-    
-    const filter = btn.dataset.filter;
-    
-    projects.forEach(project => {
-      if(filter === 'all' || project.dataset.category === filter) {
-        project.classList.remove('hide');
-      } else {
-        project.classList.add('hide');
-      }
-    });
-  });
-});
-
-	     function openCalc() { 
-  document.querySelector('.calc-popup').style.display = 'block';
-  document.querySelector('.calc-overlay').style.display = 'block';
-}
-function closeCalc() { 
-  document.querySelector('.calc-popup').style.display = 'none';
-  document.querySelector('.calc-overlay').style.display = 'none';
-}
-function calcInput(val) { document.getElementById('calc-display').value += val; }
-function calcClear() { document.getElementById('calc-display').value = ''; }
-function calcDelete() { 
-  let v = document.getElementById('calc-display').value;
-  document.getElementById('calc-display').value = v.slice(0, -1);
-}
-function calcEqual() { 
-  try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); }
-  catch { alert('Invalid calculation'); }
-}
-	</script>
-
-        <div class="calc-overlay" onclick="closeCalc()"></div>
-<div class="calc-popup">
-  <input type="text" id="calc-display" disabled>
-  <div class="calc-buttons">
-    <button onclick="calcClear()">C</button><button onclick="calcInput('/')">/</button><button onclick="calcInput('*')">*</button><button onclick="calcDelete()">⌫</button>
-    <button onclick="calcInput('7')">7</button><button onclick="calcInput('8')">8</button><button onclick="calcInput('9')">9</button><button onclick="calcInput('-')">-</button>
-    <button onclick="calcInput('4')">4</button><button onclick="calcInput('5')">5</button><button onclick="calcInput('6')">6</button><button onclick="calcInput('+')">+</button>
-    <button onclick="calcInput('1')">1</button><button onclick="calcInput('2')">2</button><button onclick="calcInput('3')">3</button><button onclick="calcEqual()" style="background:#3498db; color:white;">=</button>
-    <button onclick="calcInput('0')" style="grid-column: span 2;">0</button><button onclick="calcInput('.')">.</button>
-  </div>
-  <button onclick="closeCalc()" style="width:100%; margin-top:10px; padding:10px;">Close</button>
-</div>
+</script>
 </body>
 </html>
