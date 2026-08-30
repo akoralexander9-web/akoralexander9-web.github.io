@@ -6,6 +6,7 @@ akor
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alexander | Portfolio</title>
+	<style>
   /* Dark mode styles */
 body.dark {
     background: #1a1a1a;
@@ -15,7 +16,7 @@ body.dark header { background: #0d47a1; }
 body.dark .project { background: #2a2a2a; color: #f4f4f4; }
 body.dark .btn { background: #42a5f5; }
 body.dark .btn:hover { background: #1e88e5; }
-	<style>
+	</style>
 .projects { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
@@ -123,9 +124,11 @@ header .btn:hover {
   </style>
 </head>	
 <body>
-    <header>
+    
+	<header>
         <img src="photo.png" alt="Alexander">
         <h1>Alexander</h1>
+		<button id="theme-toggle" class="btn">🌙 Dark Mode</button>
         <p>Web Developer & Designer</p>
 		<a href="Alexander-CV.pdf" class="btn" download>⬇️ Download CV</a>
     </header>
