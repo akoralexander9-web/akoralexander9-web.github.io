@@ -161,6 +161,18 @@ body.dark .contact-form input, body.dark .contact-form textarea {
 .project.hide { display: none; }
 body.dark .filter-btn { border-color: #3498db; color: #3498db; }
 body.dark .filter-btn.active { background: #3498db; color: #121212; }
+	
+	        .try-calculator-btn { 
+  display: inline-block; 
+  margin-top: 15px; 
+  padding: 10px 20px; 
+  background: #3498db; 
+  color: white; 
+  text-decoration: none; 
+  border-radius: 8px; 
+  font-weight: 600; 
+}
+.try-calculator-btn:hover { background: #2980b9; }
 	</style>
 </head>	
 <body>
@@ -257,5 +269,11 @@ body.dark .filter-btn.active { background: #3498db; color: #121212; }
 const filterBtns = document.querySelectorAll('.filter-btn');
 const projects = document.querySelectorAll('.project');
 </script>
+
+        <div class="project">
+  <h3>Calculator App</h3>
+  <p>A responsive calculator...</p>
+  <a href="calculator.html" target="_blank" class="try-calculator-btn">Try Calculator</a>  <-- ADD THIS LINE
+</div>
 </body>
 </html>
