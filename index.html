@@ -127,6 +127,25 @@ header .btn:.hover {
 .skill-progress { height: 100%; background: #3498db; border-radius: 20px; width: 0; animation: fillBar 2s forwards; }
 @keyframes fillBar { to { width: var(--width); } }
 body.dark .skill-bar { background: #333; }
+
+		.contact-form { max-width: 600px; margin: 50px auto; padding: 20px; }
+.contact-form h2 { text-align: center; margin-bottom: 30px; }
+.contact-form input, .contact-form textarea { 
+  width: 100%; padding: 12px; margin-bottom: 15px; 
+  border: 2px solid #ddd; border-radius: 8px; font-family: inherit; 
+}
+.contact-form input:focus, .contact-form textarea:focus { 
+  border-color: #3498db; outline: none; 
+}
+.contact-form button { 
+  width: 100%; padding: 12px; background: #3498db; color: white; 
+  border: none; border-radius: 8px; font-size: 16px; cursor: pointer; 
+  transition: 0.3s;
+}
+.contact-form button:hover { background: #2980b9; transform: translateY(-2px); }
+body.dark .contact-form input, body.dark .contact-form textarea { 
+  background: #2a2a2a; border-color: #444; color: white; 
+}
   </style>
 </head>	
 <body>
@@ -180,7 +199,15 @@ body.dark .skill-bar { background: #333; }
     <a href="calculator.html" class="btn">View Project</a>
 </div>
     </section>
-	     
+	     <section class="contact-form">
+  <h2>Get In Touch</h2>
+  <form action="https://formspree.io/f/mayvqkqw" method="POST">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+</section>
 <section class="contact">
     <h2>Contact Me</h2>
     <p>Let's work together! Connect with me:</p>
