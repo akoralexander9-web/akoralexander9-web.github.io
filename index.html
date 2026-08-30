@@ -146,7 +146,22 @@ body.dark .skill-bar { background: #333; }
 body.dark .contact-form input, body.dark .contact-form textarea { 
   background: #2a2a2a; border-color: #444; color: white; 
 }
-  </style>
+  
+.filter-buttons { text-align: center; margin: 30px 0; }
+.filter-btn { 
+  padding: 10px 20px; margin: 5px; border: 2px solid #3498db; 
+  background: transparent; color: #3498db; border-radius: 20px; 
+  cursor: pointer; font-weight: 600; transition: 0.3s;
+}
+.filter-btn.active, .filter-btn:hover { 
+  background: #3498db; color: white; 
+}
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.project { transition: 0.3s; }
+.project.hide { display: none; }
+body.dark .filter-btn { border-color: #3498db; color: #3498db; }
+body.dark .filter-btn.active { background: #3498db; color: #121212; }	
+	</style>
 </head>	
 <body>
     
@@ -185,14 +200,32 @@ body.dark .contact-form input, body.dark .contact-form textarea {
     <div class="skill-bar"><div class="skill-progress" style="--width: 80%"></div></div>
   </div>
 </section>
-    <section class="projects">
-        <h2>My Projects</h2>
-        
-        <div class="project">
-            <h3>Portfolio Website</h3>
-            <p>The website you're looking at right now! Built with HTML and CSS.</p>
-            <a href="https://akoralexander9-web.github.io" target="_blank">View Site</a>
-        </div>
+   <section class="projects-section">
+  <h2 style="text-align: center;">My Projects</h2>
+  
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="web">Web</button>
+    <button class="filter-btn" data-filter="app">Apps</button>
+  </div>
+
+  <div class="projects">
+    <div class="project" data-category="web">
+      <h3>Portfolio Website</h3>
+      <p>The website you're looking at right now! Built with HTML and CSS.</p>
+    </div>
+
+    <div class="project" data-category="app">
+      <h3>Calculator App</h3>
+      <p>A simple calculator built with HTML, CSS, and JavaScript. It can do +, -, *, /.</p>
+    </div>
+
+    <div class="project" data-category="web">
+      <h3>Landing Page</h3>
+      <p>A responsive landing page for a fake company. Built with HTML and CSS.</p>
+    </div>
+  </div>
+</section>
 		<div class="project">
     <h3>Project 2: Calculator App</h3>
     <p>A simple calculator built with HTML, CSS, and JavaScript. It can do +, -, *, /.</p>
@@ -230,5 +263,26 @@ body.dark .contact-form input, body.dark .contact-form textarea {
     });
     </script>
  <p>© 2026 Alexander. Made with ❤️</p>    
+    <script>
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projects = document.querySelectorAll('.project');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const filter = btn.dataset.filter;
+    
+    projects.forEach(project => {
+      if(filter === 'all' || project.dataset.category === filter) {
+        project.classList.remove('hide');
+      } else {
+        project.classList.add('hide');
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
