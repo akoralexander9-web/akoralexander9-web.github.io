@@ -113,6 +113,15 @@ header .btn:hover {
 }
   </style>
 </head>
+/* Dark mode styles */
+body.dark {
+    background: #1a1a1a;
+    color: #f4f4f4;
+}
+body.dark header { background: #0d47a1; }
+body.dark .project { background: #2a2a2a; color: #f4f4f4; }
+body.dark .btn { background: #42a5f5; }
+body.dark .btn:hover { background: #1e88e5; }	
 <body>
     <header>
         <img src="photo.png" alt="Alexander">
@@ -151,11 +160,16 @@ header .btn:hover {
         <a href="https://linkedin.com/in/" target="_blank" class="social-btn">🔗 LinkedIn</a>
     </div>
     
-    <p><strong>Location:</strong> Kano, Nigeria</p>
+    <p><strong>Location:</strong> Abuja, Nigeria</p>
 </section>
-    </a>
-</section>
-    <footer>
-        <p>© 2026 Alexander. Made with ❤️</p>
-
+ 
+    <script>
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        toggle.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
+    </script>
+ <p>© 2026 Alexander. Made with ❤️</p>    
+</body>
 </html>
