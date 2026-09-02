@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feed Cost Calculator | Alexander</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial; max-width:600px; margin:auto; padding:20px; background:#fffaf0;}
+    h2{text-align:center; color:#d97706;}
+    .card{background:#fff; padding:25px; border-radius:12px; margin-bottom:15px; box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+    input, button{width:100%; padding:14px; margin:10px 0; border:2px solid #ddd; border-radius:8px; font-size:16px;}
+    button{background:#d97706; color:#fff; border:none; cursor:pointer; font-weight:bold; font-size:18px;}
+    button:hover{background:#b45309;}
+    .result{background:#fef3c7; padding:15px; border-radius:8px; margin:10px 0;}
+    .total{font-size:26px; font-weight:bold; color:#d97706; text-align:center;}
+    small{color:#666;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🐔 Feed Cost Calculator</h2>
+    <p>Calculate total feed needed and cost for 100 birds for 8 weeks</p>
+    
+    <label><b>Number of Birds:</b></label>
+    <input id="birds" type="number" placeholder="e.g 100" value="100">
+    
+    <label><b>Price per Bag of Feed ₦:</b></label>
+    <input id="price" type="number" placeholder="e.g 18000" value="18000">
+    
+    <button onclick="calculate()">Calculate Feed Cost</button>
+  </div>
+  
+  <div class="card" id="results" style="display:none;">
+    <h3>📊 Your Feed Plan for 8 Weeks</h3>
+    
+    <div class="result">
+      <b>Starter Feed:</b> <span id="starter"></span> bags<br>
+      <small>Week 1-4</small>
+    </div>
+    
+    <div class="result">
+      <b>Finisher Feed:</b> <span id="finisher"></span> bags<br>
+      <small>Week 5-8</small>
+    </div>
+    
+    <div class="result">
+      <b>Total Bags:</b> <span id="totalBags"></span> bags
+    </div>
+    
+    <hr>
+    <p class="total">Total Cost: ₦<span id="totalCost"></span></p>
+    <p style="text-align:center;"><small>Cost per Bird: ₦<span id="perBird"></span></small></p>
+    
+    <a id="whatsapp" href="#" style="display:block; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;">📱 Send to WhatsApp</a>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <a href="/" style="color:#d97706;">← Back to Portfolio</a>
+  </div>
+
+<script>
+function calculate(){
+  let birds = parseInt(document.getElementById('birds').value) || 0;
+  let price = parseInt(document.getElementById('price').value) || 0;
+  
+  if(birds == 0 || price == 0) return alert("Please enter birds and price");
+  
+  // Industry standard: 100 birds eat ~25 bags in 8 weeks
+  // Starter: 10 bags, Finisher: 15 bags
+  let starterBags = Math.ceil(birds / 10);
+  let finisherBags = Math.ceil(birds / 6.6);
+  let totalBags = starterBags + finisherBags;
+  let totalCost = totalBags * price;
+  let perBird = Math.ceil(totalCost / birds);
+  
+  document.getElementById('starter').innerText = starterBags;
+  document.getElementById('finisher').innerText = finisherBags;
+  document.getElementById('totalBags').innerText = totalBags;
+  document.getElementById('totalCost').innerText = totalCost.toLocaleString();
+  document.getElementById('perBird').innerText = perBird.toLocaleString();
+  
+  document.getElementById('results').style.display = 'block';
+  
+  let msg = `Feed Plan for ${birds} birds: ${totalBags} bags = ₦${totalCost.toLocaleString()}. Calc by Alexander`;
+  document.getElementById('whatsapp').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+}
+</script>
+</body>
+</html>
