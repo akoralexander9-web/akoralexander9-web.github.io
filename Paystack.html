@@ -1,0 +1,23 @@
+<button onclick="payWithPaystack()" class="btn">Upgrade to Pro - ₦500</button>
+
+<script src="https://js.paystack.co/v1/inline.js"></script> 
+<script>
+function payWithPaystack(){
+  let handler = PaystackPop.setup({
+    key: 'pk_test_YOUR_PUBLIC_KEY', // replace with your key from dashboard
+    email: 'customer@email.com', // get this from input
+    amount: 50000, // 500 * 100 = 50000 kobo
+    currency: "NGN",
+    ref: ''+Math.floor((Math.random() * 1000000000) + 1), // unique ref
+    callback: function(response){
+        alert('Payment successful! Ref: ' + response.reference);
+        // HERE: Unlock Pro features. Save to localStorage
+        localStorage.setItem("isPro", "true");
+    },
+    onClose: function(){
+        alert('Payment cancelled');
+    }
+  });
+  handler.openIframe();
+}
+</script>
