@@ -177,6 +177,9 @@ body.dark .filter-btn.active { background: #3498db; color: #121212; }
                     #work .card{transition:0.3s;}
 #work .card:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.15);}
 @media(min-width:700px){#work > div{grid-template-columns:1fr 1fr;}}
+
+		    h2, h3{word-wrap:break-word;}
+.btn{display:inline-block;}
 		
 	</style>
 </head>	
@@ -203,13 +206,16 @@ body.dark .filter-btn.active { background: #3498db; color: #121212; }
 
 		        <h2 id="projects">My Projects</h2>
 
-
-<section id="work" class="card">
-  <h2>🚀 View My Work</h2>
-  <p>Here are 6 tools I built with HTML, CSS & JavaScript. No database needed.</p>
+<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:20px;">
+  <a href="#work" class="btn" style="background:#fff; color:#0f172a; padding:14px 24px; border-radius:10px; text-decoration:none; font-weight:bold; white-space:nowrap;">
+    View My Work
+  </a>
   
-  <div style="display:grid; gap:15px; margin-top:20px;">
-    
+  <a href="https://wa.me/2349021880841?text=Hi%20Alexander%2C%20I%20saw%20your%20portfolio%20and%20I%20want%20to%20work%20with%20you" 
+     class="btn" style="background:#25D366; color:#fff; padding:14px 24px; border-radius:10px; text-decoration:none; font-weight:bold; white-space:nowrap;">
+    💬 Hire Me on WhatsApp
+  </a>
+</div>
     <!-- Project 1 -->
     <div class="card" style="background:#fffaf0;">
       <h3>🐔 Poultry Tracker</h3>
