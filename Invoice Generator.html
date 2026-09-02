@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Generator | Alexander</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial; max-width:800px; margin:auto; padding:20px; background:#f8fafc;}
+    h2{text-align:center; color:#0f172a;}
+    .card{background:#fff; padding:25px; border-radius:12px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+    input{width:100%; padding:10px; margin:8px 0; border:1px solid #ddd; border-radius:6px;}
+    table{width:100%; border-collapse:collapse; margin:15px 0;}
+    th,td{border:1px solid #ddd; padding:10px; text-align:left;}
+    th{background:#0f172a; color:#fff;}
+    button{background:#0f172a; color:#fff; padding:12px 20px; border:none; border-radius:8px; cursor:pointer; margin:5px;}
+    button:hover{background:#1e293b;}
+    .total-row{font-weight:bold; font-size:18px;}
+    @media print{.no-print{display:none}}
+  </style>
+</head>
+<body>
+  <div class="card no-print">
+    <h2>📄 Invoice Generator</h2>
+    
+    <h3>Your Info</h3>
+    <input id="yourName" placeholder="Your Name: Alexander" value="Alexander">
+    <input id="yourPhone" placeholder="Your Phone: 07031257305" value="07031257305">
+    
+    <h3>Client Info</h3>
+    <input id="clientName" placeholder="Client Name">
+    <input id="clientPhone" placeholder="Client Phone">
+    
+    <h3>Add Item</h3>
+    <input id="item" placeholder="Service: e.g Website Design">
+    <input id="qty" type="number" placeholder="Qty" value="1">
+    <input id="price" type="number" placeholder="Price ₦">
+    <button onclick="addItem()">+ Add Item</button>
+  </div>
+  
+  <div class="card" id="invoice">
+    <h2 style="text-align:center;">INVOICE</h2>
+    <p><b>From:</b> <span id="fromName">Alexander</span> | <span id="fromPhone">07031257305</span></p>
+    <p><b>To:</b> <span id="toName">-</span> | <span id="toPhone">-</span></p>
+    <p><b>Date:</b> <span id="date"></span></p>
+    
+    <table id="itemsTable">
+      <thead>
+        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr class="total-row"><td colspan="3">Grand Total</td><td>₦<span id="grandTotal">0</span></td></tr>
+      </tfoot>
+    </table>
+    
+    <div class="no-print">
+      <button onclick="window.print()">🖨️ Print Invoice</button>
+      <button onclick="sendWhatsApp()">📱 Send to WhatsApp</button>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <a href="/" style="color:#0f172a;">← Back to Portfolio</a>
+  </div>
+
+<script>
+let items = [];
+let total = 0;
+
+document.getElementById('date').innerText = new Date().toLocaleDateString();
+
+function addItem(){
+  let item = document.getElementById('item').value;
+  let qty = parseInt(document.getElementById('qty').value);
+  let price = parseInt(document.getElementById('price').value);
+  
+  if(!item || !qty || !price) return alert("Fill all fields");
+  
+  let itemTotal = qty * price;
+  items.push({item, qty, price, itemTotal});
+  total += itemTotal;
+  
+  document.getElementById('fromName').innerText = document.getElementById('yourName').value;
+  document.getElementById('fromPhone').innerText = document.getElementById('yourPhone').value;
+  document.getElementById('toName').innerText = document.getElementById('clientName').value;
+  document.getElementById('toPhone').innerText = document.getElementById('clientPhone').value;
+  
+  let tbody = document.querySelector('#itemsTable tbody');
+  tbody.innerHTML += `<tr><td>${item}</td><td>${qty}</td><td>₦${price.toLocaleString()}</td><td>₦${itemTotal.toLocaleString()}</td></tr>`;
+  
+  document.getElementById('grandTotal').innerText = total.toLocaleString();
+  
+  document.getElementById('item').value = '';
+  document.getElementById('qty').value = '1';
+  document.getElementById('price').value = '';
+}
+
+function sendWhatsApp(){
+  let client = document.getElementById('clientName').value;
+  let msg = `Invoice for ${client}\nTotal: ₦${total.toLocaleString()}\nFrom: Alexander`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+}
+</script>
+</body>
+</html>
