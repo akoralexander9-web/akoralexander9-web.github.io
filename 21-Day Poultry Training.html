@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>21-Day Poultry Training | Alexander</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial; max-width:650px; margin:auto; padding:20px; background:#f0fdf4;}
+    h2{text-align:center; color:#15803d;}
+    .card{background:#fff; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+    .day{padding:12px; margin:8px 0; border:2px solid #ddd; border-radius:8px; cursor:pointer; transition:0.3s;}
+    .day:hover{background:#f0fdf4;}
+    .day.done{background:#dcfce7; border-color:#15803d; text-decoration:line-through;}
+    input[type="checkbox"]{transform:scale(1.3); margin-right:10px;}
+    .progress-bar{background:#e5e7eb; border-radius:10px; height:20px; margin:15px 0;}
+    .progress{height:20px; background:#15803d; border-radius:10px; width:0%; transition:0.3s;}
+    .total{text-align:center; font-weight:bold; font-size:18px; color:#15803d;}
+    button{background:#15803d; color:#fff; padding:12px; border:none; border-radius:8px; width:100%; cursor:pointer; font-weight:bold;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🐔 21-Day Poultry Training Checklist</h2>
+    <p>Tick each task as you complete it. Your progress is saved automatically.</p>
+    
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <p class="total">Progress: <span id="percent">0</span>% Complete</p>
+  </div>
+
+  <div class="card" id="checklist"></div>
+
+  <div class="card">
+    <button onclick="reset()">Reset All Progress</button>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <a href="/" style="color:#15803d;">← Back to Portfolio</a>
+  </div>
+
+<script>
+const tasks = [
+  "Day 1: Brooding setup + Heat source + Clean water",
+  "Day 2: Monitor temperature + First feed",
+  "Day 3: Check litter + Ventilation",
+  "Day 4: Weight check + Observe chick activity",
+  "Day 5: Clean waterers + Feeders",
+  "Day 6: Biosecurity check + Remove dead birds",
+  "Day 7: First Vaccine: Gumboro + Vitamin",
+  "Day 8: Post-vaccine monitoring",
+  "Day 9: Litter management + Turn litter",
+  "Day 10: Increase space per bird",
+  "Day 11: Second feed change preparation",
+  "Day 12: Switch to Grower feed",
+  "Day 13: Health check + Deworming",
+  "Day 14: Second Vaccine: Newcastle",
+  "Day 15: Ventilation adjustment",
+  "Day 16: Weight gain check",
+  "Day 17: Clean house thoroughly",
+  "Day 18: Reduce heat gradually",
+  "Day 19: Prepare for finisher feed",
+  "Day 20: Switch to Finisher feed",
+  "Day 21: Final review + Market preparation"
+];
+
+function loadChecklist(){
+  let container = document.getElementById('checklist');
+  container.innerHTML = '';
+  
+  tasks.forEach((task, i) => {
+    let done = localStorage.getItem('day'+i) === 'true';
+    container.innerHTML += `
+      <div class="day ${done ? 'done' : ''}" onclick="toggle(${i})">
+        <input type="checkbox" ${done ? 'checked' : ''} id="cb${i}">
+        <label for="cb${i}">${task}</label>
+      </div>
+    `;
+  });
+  updateProgress();
+}
+
+function toggle(i){
+  let current = localStorage.getItem('day'+i) === 'true';
+  localStorage.setItem('day'+i, !current);
+  loadChecklist();
+}
+
+function updateProgress(){
+  let done = 0;
+  for(let i=0; i<21; i++){
+    if(localStorage.getItem('day'+i) === 'true') done++;
+  }
+  let percent = Math.round((done/21)*100);
+  document.getElementById('percent').innerText = percent;
+  document.getElementById('progress').style.width = percent + '%';
+}
+
+function reset(){
+  if(confirm("Reset all progress?")){
+    for(let i=0; i<21; i++){ localStorage.removeItem('day'+i); }
+    loadChecklist();
+  }
+}
+
+loadChecklist();
+</script>
+</body>
+</html>
