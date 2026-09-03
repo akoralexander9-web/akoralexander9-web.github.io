@@ -24,9 +24,10 @@ body.dark .social-btn { background: #2a2a2a; color: #3498db; }
 /* Sections */
 section { padding: 40px 20px; background: white; margin: 20px; border-radius: 10px; opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease forwards; }
 body.dark section { background: #2a2a2a; }
-section:nth-child(3) { animation-delay: 0.2s; }
-section:nth-child(4) { animation-delay: 0.4s; }
-section:nth-child(5) { animation-delay: 0.6s; }
+section:nth-child(2) { animation-delay: 0.2s; }
+section:nth-child(3) { animation-delay: 0.4s; }
+section:nth-child(4) { animation-delay: 0.6s; }
+section:nth-child(5) { animation-delay: 0.8s; }
 
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
@@ -88,35 +89,30 @@ h2, h3 { word-wrap: break-word; }
   <p>Click "View My Work" above to see all projects</p>
 
   <div id="projectsList">
-    <!-- Project 1 -->
     <div class="card" style="background:#fffaf0;">
       <h3>🐔 Poultry Tracker</h3>
       <p>Track bird health, feed, and growth. Built for poultry farmers.</p>
       <a href="poultrytracker.html" class="btn" style="background:#d97706;">View Project</a>
     </div>
     
-    <!-- Project 2 -->
     <div class="card" style="background:#f0fdf4;">
       <h3>📝 21-Day Training Checklist</h3>
       <p>Daily tasks for poultry training with progress bar. Auto saves.</p>
       <a href="21-Day Poultry Training.html" class="btn" style="background:#15803d;">Start Training</a>
     </div>
     
-    <!-- Project 3 -->
     <div class="card" style="background:#fffaf0;">
       <h3>🧮 Feed Cost Calculator</h3>
       <p>Calculate total feed bags and cost for your broilers in 8 weeks.</p>
       <a href="feed cost calculator.html" class="btn" style="background:#d97706;">Calculate Cost</a>
     </div>
     
-    <!-- Project 4 -->
     <div class="card" style="background:#eff6ff;">
       <h3>🌐 Website Cost Estimator</h3>
       <p>Get instant quote for landing page, business site, or e-commerce.</p>
       <a href="web Quote Generator.html" class="btn" style="background:#1d4ed8;">Get Quote</a>
     </div>
     
-    <!-- Project 5 -->
     <div class="card" style="background:#f8fafc;">
       <h3>📄 Invoice Generator</h3>
       <p>Create and print professional invoices for clients in 30 seconds.</p>
@@ -161,13 +157,19 @@ h2, h3 { word-wrap: break-word; }
   </div>
 </section>
 
+<!-- FORM HERE WITH FORMSPREE + SUCCESS MESSAGE -->
 <section class="contact-form">
   <h2>Get In Touch</h2>
-  <form action="https://formspree.io/f/mayvqkqw" method="POST">
+  <form id="contactForm" action="https://formspree.io/f/xrpgkorw" method="POST">
     <input type="text" name="name" placeholder="Your Name" required>
     <input type="email" name="email" placeholder="Your Email" required>
-    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+    <input type="text" name="phone" placeholder="Your WhatsApp Number">
+    <textarea name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+    
+    <input type="hidden" name="_subject" value="New Client Message from Portfolio Website">
+    
     <button type="submit">Send Message</button>
+    <p id="formStatus" style="margin-top:10px; font-weight:bold; text-align:center;"></p>
   </form>
 </section>
 
@@ -188,7 +190,7 @@ h2, h3 { word-wrap: break-word; }
 </footer>
 
 <!-- Floating WhatsApp Button -->
-<a href="https://wa.me/2349021880841?text=Hi%20Alexander%2C%20I%20have%20a%20question%20about%20your%20services" 
+<a href="https://wa.me/2347031257305?text=Hi%20Alexander%2C%20I%20have%20a%20question%20about%20your%20services" 
    target="_blank" 
    style="position:fixed; bottom:20px; right:20px; background:#25D366; color:#fff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; text-decoration:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); z-index:999;">
    💬
@@ -206,6 +208,37 @@ const toggle = document.getElementById('theme-toggle');
 toggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
   toggle.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+});
+
+// Formspree AJAX Submit
+const form = document.getElementById('contactForm');
+const status = document.getElementById('formStatus');
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const data = new FormData(form);
+  status.innerHTML = "Sending...";
+  status.style.color = "#3498db";
+  
+  try {
+    const response = await fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    
+    if (response.ok) {
+      status.innerHTML = "✅ Message sent! I will reply you on WhatsApp/Email soon.";
+      status.style.color = "#16a34a";
+      form.reset();
+    } else {
+      status.innerHTML = "❌ Oops! Something went wrong. Try WhatsApp instead.";
+      status.style.color = "#dc2626";
+    }
+  } catch (error) {
+    status.innerHTML = "❌ Network error. Please try again.";
+    status.style.color = "#dc2626";
+  }
 });
 </script>
 	
