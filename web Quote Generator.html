@@ -22,10 +22,13 @@
 
 <label>Website Type</label>
 <select id="type" onchange="calculate()">
-  <option value="80000">Landing Page - ₦80,000</option>
-  <option value="150000">Business Website - ₦150,000</option>
-  <option value="350000">E-commerce - ₦350,000</option>
-</select>
+    <label><input type="checkbox" id="landing" value="50000"> Landing Page - ₦50,000</label>
+    <label><input type="checkbox" id="business" value="120000"> Business Website - ₦120,000</label>
+    <label><input type="checkbox" id="ecom" value="250000"> E-commerce Store - ₦250,000</label>
+    <label><input type="checkbox" id="blog" value="80000"> Blog Website - ₦80,000</label>
+    <label><input type="checkbox" id="hosting" value="20000"> 1 Year Hosting + Domain - ₦20,000</label>
+    <label><input type="checkbox" id="seo" value="30000"> Basic SEO Setup - ₦30,000</label>
+    </select>
 
 <label>Extra Pages</label>
 <input type="number" id="pages" value="0" min="0" onchange="calculate()">
