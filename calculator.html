@@ -3,39 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator App</title>
+    <title>Scientific Calculator | Triple-A</title>
     <style>
-        body { font-family: Arial; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .calculator { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        #display { width: 100%; height: 50px; font-size: 24px; text-align: right; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        button { height: 50px; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; background: #3498db; color: white; }
-        button:hover { background: #2980b9; }
-        .clear { background: #e74c3c; grid-column: span 4; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap'); /* Digital font for answer */
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #0a0f1a; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin:0; 
+        }
+        .calculator { 
+            background: #1e293b; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 0 40px rgba(56,189,248,0.3); 
+            max-width: 420px; 
+            width: 95%;
+        }
+        h2 { 
+            color: #38bdf8; 
+            text-align: center; 
+            margin: 0 0 20px 0; 
+            font-size: 24px;
+        }
+
+        /* BOLD ANSWER SCREEN */
+        #display { 
+            width: 100%; 
+            height: 90px; 
+            font-size: 42px; 
+            font-weight: 900; /* EXTRA BOLD */
+            font-family: 'Orbitron', monospace; /* Digital bold font */
+            text-align: right; 
+            margin-bottom: 20px; 
+            border: 3px solid #38bdf8; 
+            border-radius: 12px; 
+            padding: 15px; 
+            background: #000; /* Black background for contrast */
+            color: #00ff88; /* Neon green answer - easy on eyes */
+            box-sizing: border-box; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ff88; /* Glow effect */
+        }
+
+        .buttons { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 12px; 
+        }
+        button { 
+            height: 65px; 
+            font-size: 22px; 
+            font-weight: 900; /* THICK TEXT */
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            background: #334155; 
+            color: white; 
+            transition: 0.15s; 
+            box-shadow: 0 4px 0 #0f172a;
+        }
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0f172a;
+        }
+        button:hover { 
+            background: #475569; 
+        }
+        
+        /* COLORS FOR CLARITY */
+        .number { background: #475569; font-size: 24px; } /* BIGGER NUMBERS */
+        .number:hover { background: #64748b; }
+        
+        .operator { 
+            background: #0ea5e9; 
+            font-size: 28px; /* BIGGER SIGNS */
+        }
+        .operator:hover { background: #0284c7; }
+        
+        .function { 
+            background: #f59e0b; 
+            color: #000; 
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .function:hover { background: #d97706; }
+        
+        .equals { 
+            background: #22c55e; 
+            grid-column: span 2; 
+            font-size: 30px;
+        }
+        .equals:hover { background: #16a34a; }
+        
+        .clear { 
+            background: #ef4444; 
+            grid-column: span 3; 
+            font-size: 20px;
+        }
+        .clear:hover { background: #dc2626; }
+        
         .back { text-align: center; margin-top: 20px; }
-        .back a { color: #3498db; text-decoration: none; }
+        .back a { color: #38bdf8; text-decoration: none; font-weight: bold; font-size: 16px; }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" id="display" disabled>
+        <h2>🔬 Scientific Calculator</h2>
+        <input type="text" id="display" disabled placeholder="0">
         <div class="buttons">
-            <button onclick="append('7')">7</button>
-            <button onclick="append('8')">8</button>
-            <button onclick="append('9')">9</button>
-            <button onclick="append('/')">/</button>
-            <button onclick="append('4')">4</button>
-            <button onclick="append('5')">5</button>
-            <button onclick="append('6')">6</button>
-            <button onclick="append('*')">*</button>
-            <button onclick="append('1')">1</button>
-            <button onclick="append('2')">2</button>
-            <button onclick="append('3')">3</button>
-            <button onclick="append('-')">-</button>
-            <button onclick="append('0')">0</button>
-            <button onclick="append('.')">.</button>
-            <button onclick="calculate()">=</button>
-            <button onclick="append('+')">+</button>
+            <!-- Row 1: Functions -->
+            <button class="function" onclick="append('Math.sin(')">sin</button>
+            <button class="function" onclick="append('Math.cos(')">cos</button>
+            <button class="function" onclick="append('Math.tan(')">tan</button>
+            <button class="function" onclick="append('Math.log10(')">log</button>
+            <button class="function" onclick="append('Math.log(')">ln</button>
+
+            <!-- Row 2: Functions -->
+            <button class="function" onclick="append('Math.sqrt(')">√</button>
+            <button class="function" onclick="append('Math.PI')">π</button>
+            <button class="function" onclick="append('**')">x^y</button>
+            <button class="function" onclick="append(')">(</button>
+            <button class="function" onclick="append(')')">)</button>
+
+            <!-- Row 3: Numbers -->
+            <button class="number" onclick="append('7')">7</button>
+            <button class="number" onclick="append('8')">8</button>
+            <button class="number" onclick="append('9')">9</button>
+            <button class="operator" onclick="append('/')">÷</button>
+            <button class="operator" onclick="backspace()">⌫</button>
+
+            <!-- Row 4: Numbers -->
+            <button class="number" onclick="append('4')">4</button>
+            <button class="number" onclick="append('5')">5</button>
+            <button class="number" onclick="append('6')">6</button>
+            <button class="operator" onclick="append('*')">×</button>
+            <button class="operator" onclick="append('-')">−</button>
+
+            <!-- Row 5: Numbers -->
+            <button class="number" onclick="append('1')">1</button>
+            <button class="number" onclick="append('2')">2</button>
+            <button class="number" onclick="append('3')">3</button>
+            <button class="operator" onclick="append('+')">+</button>
+            <button class="operator" onclick="append('.')">.</button>
+
+            <!-- Row 6: 0 and Equals -->
+            <button class="number" onclick="append('0')" style="grid-column: span 3;">0</button>
+            <button class="equals" onclick="calculate()">=</button>
         </div>
         <button class="clear" onclick="clearDisplay()">Clear</button>
         <div class="back">
@@ -45,13 +163,26 @@
 
     <script>
         function append(value) {
-            document.getElementById('display').value += value;
+            let display = document.getElementById('display');
+            if(display.value === 'Error') display.value = '';
+            display.value += value;
         }
         function calculate() {
-            document.getElementById('display').value = eval(document.getElementById('display').value);
+            try {
+                let exp = document.getElementById('display').value;
+                exp = exp.replace(/Math\.(sin|cos|tan)\(/g, 'Math.$1(Math.PI/180*');
+                let result = eval(exp);
+                document.getElementById('display').value = Number(result.toFixed(10)); // Remove long decimals
+            } catch(e) {
+                document.getElementById('display').value = 'Error';
+            }
         }
         function clearDisplay() {
             document.getElementById('display').value = '';
+        }
+        function backspace() {
+            let current = document.getElementById('display').value;
+            document.getElementById('display').value = current.slice(0, -1);
         }
     </script>
 </body>
