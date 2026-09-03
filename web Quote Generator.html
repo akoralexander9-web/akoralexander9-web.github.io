@@ -1,64 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Web Design Quote Generator | Alexander</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body{font-family:Arial; max-width:600px; margin:auto; padding:20px; background:#f0f8ff;}
-    h2{text-align:center; color:#1e90ff;}
-    .card{background:#fff; padding:25px; border-radius:12px; margin-bottom:15px; box-shadow:0 3px 10px rgba(0,0,0,0.1);}
-    label{display:block; padding:12px; margin:8px 0; background:#f5f5f5; border-radius:8px; cursor:pointer; font-size:16px;}
-    label:hover{background:#e6f3ff;}
-    input[type="checkbox"]{margin-right:10px; transform:scale(1.2);}
-    button{background:#1e90ff; color:#fff; padding:14px; border:none; border-radius:8px; width:100%; cursor:pointer; font-size:18px; font-weight:bold;}
-    button:hover{background:#0066cc;}
-    .total{font-size:28px; font-weight:bold; color:#1e90ff; text-align:center; margin:15px 0;}
-    .whatsapp{display:block; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple-A Website Estimator</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f8fafc; padding:20px; max-width:500px; margin:auto; }
+  h2 { color:#0a74ed; text-align:center; }
+  label { font-weight:bold; margin-top:10px; display:block; }
+  select, input { padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box; }
+  .summary { background:#fff; padding:15px; border-radius:10px; margin:15px 0; border:1px solid #e2e8f0; }
+  .summary p { margin:8px 0; }
+  .total { font-size:18px; color:#0a74ed; }
+  button { background:#0a74ed; color:#fff; padding:14px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px; }
+  button:hover { background:#095fcc; }
+</style>
 </head>
 <body>
-  <div class="card">
-    <h2>🌐 Web Design Quote Generator</h2>
-    <p>Select what you need and get instant quote</p>
-    
-    <label><input type="checkbox" id="landing" value="50000"> Landing Page - ₦50,000</label>
-    <label><input type="checkbox" id="business" value="120000"> Business Website - ₦120,000</label>
-    <label><input type="checkbox" id="ecom" value="250000"> E-commerce Store - ₦250,000</label>
-    <label><input type="checkbox" id="blog" value="80000"> Blog Website - ₦80,000</label>
-    <label><input type="checkbox" id="hosting" value="20000"> 1 Year Hosting + Domain - ₦20,000</label>
-    <label><input type="checkbox" id="seo" value="30000"> Basic SEO Setup - ₦30,000</label>
-    
-    <button onclick="generate()">Generate Quote</button>
-    
-    <h3 class="total">Total: ₦<span id="total">0</span></h3>
-    
-    <a id="whatsapp" href="#" class="whatsapp" style="display:none;">📱 Send Quote to WhatsApp</a>
-  </div>
 
-  <div style="text-align:center; margin-top:20px;">
-    <a href="/" style="color:#1e90ff;">← Back to Portfolio</a>
-  </div>
+<h2>💻 Triple-A Website Cost Estimator</h2>
 
+<label>Website Type</label>
+<select id="type" onchange="calculate()">
+  <option value="80000">Landing Page - ₦80,000</option>
+  <option value="150000">Business Website - ₦150,000</option>
+  <option value="350000">E-commerce - ₦350,000</option>
+</select>
+
+<label>Extra Pages</label>
+<input type="number" id="pages" value="0" min="0" onchange="calculate()">
+
+<label>Client Email for Receipt</label>
+<input type="email" id="clientEmail" placeholder="client@email.com">
+
+<div class="summary">
+  <p>Project Total: <b>₦<span id="total">150000</span></b></p>
+  <p class="total">50% Deposit: <b>₦<span id="deposit">75000</span></b></p>
+</div>
+
+<button id="payBtn">💳 Pay 50% Deposit Now</button>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-function generate(){
-  let total = 0;
-  let services = [];
-  
-  if(document.getElementById('landing').checked){ total += 50000; services.push("Landing Page"); }
-  if(document.getElementById('business').checked){ total += 120000; services.push("Business Website"); }
-  if(document.getElementById('ecom').checked){ total += 250000; services.push("E-commerce Store"); }
-  if(document.getElementById('blog').checked){ total += 80000; services.push("Blog Website"); }
-  if(document.getElementById('hosting').checked){ total += 20000; services.push("Hosting"); }
-  if(document.getElementById('seo').checked){ total += 30000; services.push("SEO"); }
+// Calculate price
+function calculate(){
+  let base = parseInt(document.getElementById('type').value);
+  let pages = parseInt(document.getElementById('pages').value) * 10000; // ₦10k per extra page
+  let total = base + pages;
+  let deposit = total * 0.5;
   
   document.getElementById('total').innerText = total.toLocaleString();
-  
-  if(total > 0){
-    document.getElementById('whatsapp').style.display = 'block';
-    let msg = `Hi Alexander, I need a quote for: ${services.join(', ')}. Total: ₦${total.toLocaleString()}`;
-    document.getElementById('whatsapp').href = `https://wa.me/2349021880841?text=${encodeURIComponent(msg)}`;
-  }
+  document.getElementById('deposit').innerText = deposit.toLocaleString();
 }
+
+// Paystack Payment
+document.getElementById('payBtn').onclick = function() {
+  let totalText = document.getElementById('total').innerText.replace(/,/g, '');
+  let total = parseInt(totalText);
+  let deposit = total * 0.5;
+  let email = document.getElementById('clientEmail').value;
+  
+  if(!email){
+    alert('Please enter client email');
+    return;
+  }
+  
+  var handler = PaystackPop.setup({
+    key: 'pk_test_073da49110ff92bda2200e8418be9e', // YOUR TEST KEY
+    email: email, 
+    amount: deposit * 100, // Paystack uses kobo
+    currency: "NGN",
+    ref: 'TRIPLEA_'+Date.now(),
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Project Total",
+          variable_name: "total",
+          value: "₦" + total.toLocaleString()
+        }
+      ]
+    },
+    callback: function(response){
+      alert('Payment successful! \nRef: ' + response.reference);
+    },
+    onClose: function(){
+      alert('Payment window closed');
+    }
+  });
+  handler.openIframe();
+}
+
+// Run once on load
+calculate();
 </script>
+
 </body>
 </html>
