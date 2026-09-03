@@ -16,9 +16,11 @@
     .total{font-size:32px; font-weight:bold; color:#1d4ed8;}
     .breakdown{text-align:left; margin:15px 0;}
     .whatsapp{display:block; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;}
-    .paystack{display:block; background:#00C3F3; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px; border:none; width:100%; cursor:pointer; font-size:16px;}
+    .paystack{display:none; background:#00C3F3; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px; border:none; width:100%; cursor:pointer; font-size:16px;} /* HIDDEN BY DEFAULT */
     .paystack:disabled{background:#94a3b8; cursor:not-allowed;}
     #payStatus{text-align:center; margin-top:10px; font-size:14px; font-weight:bold;}
+    .agreement{margin:15px 0; padding:15px; background:#fef3c7; border-radius:8px; text-align:left;}
+    .agreement input{width:auto; margin-right:10px;}
   </style>
 </head>
 <body>
@@ -85,10 +87,18 @@
     
     <div class="breakdown" id="breakdown"></div>
     
-    <p style="background:#fef3c7; padding:10px; border-radius:8px; font-weight:bold;">Pay 50% Deposit: ₦<span id="deposit">0</span> to Start</p>
+    <p style="background:#fef3c7; padding:10px; border-radius:8px; font-weight:bold;">50% Deposit to Start: ₦<span id="deposit">0</span></p>
     
+    <!-- NEW AGREEMENT SECTION -->
+    <div class="agreement">
+      <label style="font-weight:normal;">
+        <input type="checkbox" id="agreeTerms" onchange="togglePayment()">
+        I agree to the project scope and 50% deposit to start. I understand Alexander will contact me before payment.
+      </label>
+    </div>
+
     <button class="paystack" id="payBtn" onclick="payWithPaystack()">💳 Pay 50% Deposit with Paystack</button>
-    <a id="whatsapp" href="#" target="_blank" rel="noopener" class="whatsapp">📱 Send Quote to WhatsApp</a>
+    <a id="whatsapp" href="#" target="_blank" rel="noopener" class="whatsapp">📱 Send Quote to WhatsApp for Approval</a>
     <p id="payStatus"></p>
   </div>
 
@@ -99,6 +109,7 @@
 <script>
 let globalTotal = 0;
 let globalBreakdown = [];
+let globalDeposit = 0;
 
 function calculate(){
   let total = 0;
@@ -130,15 +141,23 @@ function calculate(){
   
   globalTotal = total;
   globalBreakdown = breakdown;
-  let deposit = Math.round(total * 0.5);
+  globalDeposit = Math.round(total * 0.5);
   
   document.getElementById('total').innerText = total.toLocaleString();
-  document.getElementById('deposit').innerText = deposit.toLocaleString();
+  document.getElementById('deposit').innerText = globalDeposit.toLocaleString();
   document.getElementById('breakdown').innerHTML = breakdown.map(b => `✓ ${b}`).join('<br>');
   document.getElementById('result').style.display = 'block';
+  document.getElementById('payBtn').style.display = 'none'; // Hide payment until checkbox
+  document.getElementById('agreeTerms').checked = false;
   
-  let msg = `Hi Alexander, I need a website. Details: ${breakdown.join(', ')}. Total: ₦${total.toLocaleString()}. 50% Deposit: ₦${deposit.toLocaleString()}`;
+  let msg = `Hi Alexander, I got a quote for a website.%0A%0ADetails: ${breakdown.join(', ')}%0ATotal: ₦${total.toLocaleString()}%0A50%25 Deposit: ₦${globalDeposit.toLocaleString()}%0A%0APlease confirm so I can pay.`;
   document.getElementById('whatsapp').href = `https://wa.me/2347031257305?text=${encodeURIComponent(msg)}`;
+}
+
+// NEW FUNCTION: Only show pay button after agreement
+function togglePayment(){
+  let agreed = document.getElementById('agreeTerms').checked;
+  document.getElementById('payBtn').style.display = agreed ? 'block' : 'none';
 }
 
 function payWithPaystack() {
@@ -160,8 +179,6 @@ function payWithPaystack() {
     return;
   }
   
-  let deposit = Math.round(globalTotal * 0.5);
-  
   payBtn.disabled = true;
   status.innerText = "Opening payment window...";
   status.style.color = "#1d4ed8";
@@ -169,7 +186,7 @@ function payWithPaystack() {
   let handler = PaystackPop.setup({
     key: 'pk_test_073da49110ff92bda2200e8418be9ededab11dde', // YOUR TEST KEY
     email: email,
-    amount: deposit * 100, // kobo
+    amount: globalDeposit * 100, // kobo
     currency: "NGN",
     ref: 'WEB_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
     metadata: {
@@ -183,7 +200,7 @@ function payWithPaystack() {
       payBtn.disabled = false;
       status.innerText = '✅ Payment Successful! Ref: ' + response.reference;
       status.style.color = "#16a34a";
-      let successMsg = `Hi Alexander, I just paid 50% deposit of ₦${deposit.toLocaleString()}.%0ARef: ${response.reference}%0AProject: ${globalBreakdown.join(', ')}`;
+      let successMsg = `Hi Alexander, I just paid 50% deposit of ₦${globalDeposit.toLocaleString()}.%0ARef: ${response.reference}%0AProject: ${globalBreakdown.join(', ')}`;
       window.open(`https://wa.me/2347031257305?text=${encodeURIComponent(successMsg)}`, '_blank');
     },
     onClose: function(){
