@@ -17,8 +17,10 @@
     </div>
 
     <button id="payInvoice" style="background:#0a74ed; color:#fff; padding:14px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px;">
-      Pay Invoice via Paystack
+      💳 Pay Invoice via Paystack
     </button>
+
+    <a id="whatsappNotify" href="#" target="_blank" style="display:none; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;">📱 Notify Me on WhatsApp</a>
   </div>
 </section>
 
@@ -33,16 +35,17 @@ document.getElementById('payInvoice').onclick = function() {
   let amount = parseInt(document.getElementById('amount').value);
   let email = document.getElementById('clientEmail').value;
   let name = document.getElementById('clientName').value;
+  let project = document.getElementById('project').value;
   
-  if(!email || !amount){
-    alert('Please enter client email and amount');
+  if(!name || !email || !amount || amount <= 0){
+    alert('Please enter Client Name, Email and Amount');
     return;
   }
   
-  let deposit = amount * 0.5;
+  let deposit = Math.round(amount * 0.5);
   
   var handler = PaystackPop.setup({
-    key: 'pk_test_073da49110ff92bda2200e8418be9e', // TEST KEY
+    key: 'pk_test_073da49110ff92bda2200e8418be9ededab11dde', // YOUR FULL TEST KEY
     email: email,
     amount: deposit * 100, // kobo
     currency: "NGN",
@@ -50,11 +53,19 @@ document.getElementById('payInvoice').onclick = function() {
     metadata: {
       custom_fields: [
         {display_name: "Client Name", variable_name: "client_name", value: name},
-        {display_name: "Project", variable_name: "project", value: document.getElementById('project').value}
+        {display_name: "Project", variable_name: "project", value: project},
+        {display_name: "Total Invoice", variable_name: "total_invoice", value: "₦" + amount.toLocaleString()}
       ]
     },
     callback: function(response){
-      alert('Invoice Paid Successfully! \nRef: ' + response.reference);
+      alert('Invoice Deposit Paid Successfully! \nRef: ' + response.reference + '\nAmount: ₦' + deposit.toLocaleString());
+      
+      // Auto send WhatsApp to you
+      let msg = `New Invoice Payment!%0A%0AClient: ${name}%0AProject: ${project}%0ATotal: ₦${amount.toLocaleString()}%0A50% Deposit Paid: ₦${deposit.toLocaleString()}%0ARef: ${response.reference}`;
+      let whatsappBtn = document.getElementById('whatsappNotify');
+      whatsappBtn.href = `https://wa.me/2347031257305?text=${msg}`;
+      whatsappBtn.style.display = 'block';
+      window.open(whatsappBtn.href, '_blank');
     },
     onClose: function(){
       alert('Payment cancelled');
