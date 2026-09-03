@@ -1,19 +1,19 @@
-<!-- INVOICE GENERATOR SECTION -->
+<<!-- INVOICE GENERATOR SECTION -->
 <section id="invoice" style="background:#fff; padding:40px 20px; margin:40px 20px; border-radius:12px;">
   <h2 style="text-align:center; color:#0a74ed;">🧾 Triple-A Invoice Generator</h2>
   <p style="text-align:center; color:#555;">Send professional invoices and collect 50% deposit instantly</p>
 
   <div style="max-width:500px; margin:20px auto; background:#f8fafc; padding:25px; border-radius:10px; border:1px solid #e2e8f0;">
-    <input type="text" id="clientName" placeholder="Client Name" required style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
+    <input type="text" id="invClientName" placeholder="Client Name" required style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
     
-    <input type="email" id="clientEmail" placeholder="Client Email" required style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
+    <input type="email" id="invClientEmail" placeholder="Client Email" required style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
     
-    <input type="text" id="project" placeholder="Project Description e.g Website Design" style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
+    <input type="text" id="invProject" placeholder="Project Description e.g Website Design" style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
     
-    <input type="number" id="amount" placeholder="Total Amount ₦" oninput="updatePay()" min="1000" style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
+    <input type="number" id="invAmount" placeholder="Total Amount ₦" oninput="updateInvPay()" min="1000" style="padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box;">
     
     <div style="background:#e6f0ff; padding:12px; border-radius:8px; margin:10px 0;">
-      <p style="margin:0;"><b>Amount to Pay Now 50%:</b> ₦<span id="payAmount">0</span></p>
+      <p style="margin:0;"><b>Amount to Pay Now 50%:</b> ₦<span id="invPayAmount">0.00</span></p>
     </div>
 
     <button id="payInvoice" style="background:#0a74ed; color:#fff; padding:14px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px;">
@@ -27,18 +27,19 @@
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-function updatePay(){
-  let amount = parseFloat(document.getElementById('amount').value) || 0;
+function updateInvPay(){
+  let amount = parseFloat(document.getElementById('invAmount').value) || 0;
   let deposit = amount * 0.5;
-  document.getElementById('payAmount').innerText = deposit.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('invPayAmount').innerText = deposit.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
 document.getElementById('payInvoice').onclick = function() {
-  let amount = parseFloat(document.getElementById('amount').value);
-  let email = document.getElementById('clientEmail').value.trim();
-  let name = document.getElementById('clientName').value.trim();
-  let project = document.getElementById('project').value.trim();
+  let amount = parseFloat(document.getElementById('invAmount').value);
+  let email = document.getElementById('invClientEmail').value.trim();
+  let name = document.getElementById('invClientName').value.trim();
+  let project = document.getElementById('invProject').value.trim();
   let status = document.getElementById('invoiceStatus');
+  let payBtn = document.getElementById('payInvoice');
   
   // Validation
   if(!name || !email || !amount || amount < 1000){
@@ -57,11 +58,12 @@ document.getElementById('payInvoice').onclick = function() {
 
   let deposit = Math.round(amount * 0.5); // Round to nearest naira
   
+  payBtn.disabled = true;
   status.innerText = 'Opening payment window...';
   status.style.color = '#0a74ed';
   
   var handler = PaystackPop.setup({
-    key: 'pk_test_073da49110ff92bda2200e8418be9ededab11dde', // CHANGE TO pk_live_... WHEN LIVE
+    key: 'pk_test_073da49110ff92bda2200e8418be9ededab11dde', // YOUR TEST KEY
     email: email,
     amount: deposit * 100, // Paystack needs kobo
     currency: "NGN",
@@ -74,17 +76,19 @@ document.getElementById('payInvoice').onclick = function() {
       ]
     },
     callback: function(response){
-      status.innerText = '✅ Payment Successful!';
+      payBtn.disabled = false;
+      status.innerText = '✅ Payment Successful! Ref: ' + response.reference;
       status.style.color = '#16a34a';
       
       // Auto send WhatsApp to you
-      let msg = `New Invoice Payment!%0A%0AClient: ${name}%0AEmail: ${email}%0AProject: ${project}%0ATotal: ₦${amount.toLocaleString('en-NG')}%0A50% Deposit Paid: ₦${deposit.toLocaleString('en-NG')}%0ARef: ${response.reference}`;
+      let msg = `New Invoice Payment!%0A%0AClient: ${name}%0AEmail: ${email}%0AProject: ${project}%0ATotal: ₦${amount.toLocaleString('en-NG')}%0A50%25 Deposit Paid: ₦${deposit.toLocaleString('en-NG')}%0ARef: ${response.reference}`;
       let whatsappBtn = document.getElementById('whatsappNotify');
       whatsappBtn.href = `https://wa.me/2347031257305?text=${msg}`;
       whatsappBtn.style.display = 'block';
       window.open(whatsappBtn.href, '_blank');
     },
     onClose: function(){
+      payBtn.disabled = false;
       status.innerText = 'Payment window closed';
       status.style.color = '#64748b';
     }
