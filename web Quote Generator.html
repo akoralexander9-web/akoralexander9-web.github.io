@@ -8,7 +8,7 @@
     h2{text-align:center; color:#1d4ed8;}
     .card{background:#fff; padding:25px; border-radius:12px; margin-bottom:15px; box-shadow:0 3px 10px rgba(0,0,0,0.1);}
     label{display:block; margin:15px 0; font-weight:bold;}
-    input, select{width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; font-size:16px; margin-top:5px;}
+    input, select{width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; font-size:16px; margin-top:5px; box-sizing:border-box;}
     button{background:#1d4ed8; color:#fff; padding:15px; border:none; border-radius:8px; width:100%; cursor:pointer; font-size:18px; font-weight:bold;}
     button:hover{background:#1e40af;}
     .result{background:#dbeafe; padding:20px; border-radius:10px; text-align:center;}
@@ -27,7 +27,7 @@
         <option value="50000">Landing Page - ₦50,000</option>
         <option value="120000">Business Website - ₦120,000</option>
         <option value="250000">E-commerce Store - ₦250,000</option>
-        <option value="80000">Blog/Portfolio - ₦80,000</option>
+        <option value="80000">Blog Website - ₦80,000</option>
       </select>
     </label>
     
@@ -35,11 +35,34 @@
       <input id="pages" type="number" value="5" min="1">
       <small>+₦10,000 per extra page after 5</small>
     </label>
+
+    <label>Logo Design:
+      <select id="logo">
+        <option value="0">No Logo Design</option>
+        <option value="15000">Yes + ₦15,000</option>
+      </select>
+    </label>
     
-    <label><input type="checkbox" id="logo"> Logo Design +₦15,000</label>
-    <label><input type="checkbox" id="hosting"> 1 Year Hosting + Domain +₦20,000</label>
-    <label><input type="checkbox" id="seo"> SEO Setup +₦30,000</label>
-    <label><input type="checkbox" id="whatsappBtn"> WhatsApp Chat Button +₦5,000</label>
+    <label>Hosting + Domain:
+      <select id="hosting">
+        <option value="0">I have my own</option>
+        <option value="20000">1 Year Hosting + Domain + ₦20,000</option>
+      </select>
+    </label>
+
+    <label>SEO Setup:
+      <select id="seo">
+        <option value="0">No SEO</option>
+        <option value="30000">Basic SEO Setup + ₦30,000</option>
+      </select>
+    </label>
+
+    <label>WhatsApp Chat Button:
+      <select id="whatsappBtn">
+        <option value="0">No</option>
+        <option value="5000">Yes + ₦5,000</option>
+      </select>
+    </label>
     
     <button onclick="calculate()">Get My Quote</button>
   </div>
@@ -62,22 +85,32 @@ function calculate(){
   let total = 0;
   let breakdown = [];
   
+  // Website Type
   let type = parseInt(document.getElementById('type').value);
   let typeName = document.getElementById('type').options[document.getElementById('type').selectedIndex].text;
   total += type;
   breakdown.push(typeName);
   
+  // Pages
   let pages = parseInt(document.getElementById('pages').value);
   if(pages > 5){
     let extra = (pages - 5) * 10000;
     total += extra;
     breakdown.push(`${pages} Pages: +₦${extra.toLocaleString()}`);
+  } else {
+    breakdown.push(`${pages} Pages: Included`);
   }
   
-  if(document.getElementById('logo').checked){ total += 15000; breakdown.push("Logo Design: +₦15,000"); }
-  if(document.getElementById('hosting').checked){ total += 20000; breakdown.push("Hosting + Domain: +₦20,000"); }
-  if(document.getElementById('seo').checked){ total += 30000; breakdown.push("SEO Setup: +₦30,000"); }
-  if(document.getElementById('whatsappBtn').checked){ total += 5000; breakdown.push("WhatsApp Button: +₦5,000"); }
+  // All other dropdowns
+  let items = ["logo", "hosting", "seo", "whatsappBtn"];
+  items.forEach(id => {
+    let val = parseInt(document.getElementById(id).value);
+    let text = document.getElementById(id).options[document.getElementById(id).selectedIndex].text;
+    if(val > 0){
+      total += val;
+      breakdown.push(text);
+    }
+  });
   
   document.getElementById('total').innerText = total.toLocaleString();
   document.getElementById('breakdown').innerHTML = breakdown.map(b => `✓ ${b}`).join('<br>');
