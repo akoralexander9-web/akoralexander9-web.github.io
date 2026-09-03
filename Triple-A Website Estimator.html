@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple-A Website Estimator</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f8fafc; padding:20px; max-width:500px; margin:auto; }
+  h2 { color:#0a74ed; text-align:center; }
+  label { font-weight:bold; margin-top:10px; display:block; }
+  select, input { padding:12px; width:100%; border:1px solid #ccc; border-radius:8px; margin:8px 0; box-sizing:border-box; }
+  .summary { background:#fff; padding:15px; border-radius:10px; margin:15px 0; border:1px solid #e2e8f0; }
+  .summary p { margin:8px 0; }
+  .total { font-size:18px; color:#0a74ed; }
+  button { background:#0a74ed; color:#fff; padding:14px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px; }
+  button:hover { background:#095fcc; }
+</style>
+</head>
+<body>
+
+<h2>💻 Triple-A Website Cost Estimator</h2>
+
+<label>Website Type</label>
+<select id="type" onchange="calculate()">
+  <option value="80000">Landing Page - ₦80,000</option>
+  <option value="150000">Business Website - ₦150,000</option>
+  <option value="350000">E-commerce - ₦350,000</option>
+</select>
+
+<label>Extra Pages</label>
+<input type="number" id="pages" value="0" min="0" onchange="calculate()">
+
+<label>Client Email for Receipt</label>
+<input type="email" id="clientEmail" placeholder="client@email.com">
+
+<div class="summary">
+  <p>Project Total: <b>₦<span id="total">150000</span></b></p>
+  <p class="total">50% Deposit: <b>₦<span id="deposit">75000</span></b></p>
+</div>
+
+<button id="payBtn">💳 Pay 50% Deposit Now</button>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+// Calculate price
+function calculate(){
+  let base = parseInt(document.getElementById('type').value);
+  let pages = parseInt(document.getElementById('pages').value) * 10000; // ₦10k per extra page
+  let total = base + pages;
+  let deposit = total * 0.5;
+  
+  document.getElementById('total').innerText = total.toLocaleString();
+  document.getElementById('deposit').innerText = deposit.toLocaleString();
+}
+
+// Paystack Payment
+document.getElementById('payBtn').onclick = function() {
+  let totalText = document.getElementById('total').innerText.replace(/,/g, '');
+  let total = parseInt(totalText);
+  let deposit = total * 0.5;
+  let email = document.getElementById('clientEmail').value;
+  
+  if(!email){
+    alert('Please enter client email');
+    return;
+  }
+  
+  var handler = PaystackPop.setup({
+    key: 'pk_test_073da49110ff92bda2200e8418be9e', // YOUR TEST KEY
+    email: email, 
+    amount: deposit * 100, // Paystack uses kobo
+    currency: "NGN",
+    ref: 'TRIPLEA_'+Date.now(),
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Project Total",
+          variable_name: "total",
+          value: "₦" + total.toLocaleString()
+        }
+      ]
+    },
+    callback: function(response){
+      alert('Payment successful! \nRef: ' + response.reference);
+    },
+    onClose: function(){
+      alert('Payment window closed');
+    }
+  });
+  handler.openIframe();
+}
+
+// Run once on load
+calculate();
+</script>
+
+</body>
+</html>
