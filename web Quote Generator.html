@@ -3,6 +3,7 @@
 <head>
   <title>Website Cost Estimator | Alexander</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://js.paystack.co/v1/inline.js"></script> <!-- Paystack Script -->
   <style>
     body{font-family:Arial; max-width:650px; margin:auto; padding:20px; background:#eff6ff;}
     h2{text-align:center; color:#1d4ed8;}
@@ -15,12 +16,21 @@
     .total{font-size:32px; font-weight:bold; color:#1d4ed8;}
     .breakdown{text-align:left; margin:15px 0;}
     .whatsapp{display:block; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;}
+    .paystack{display:block; background:#00C3F3; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px; border:none; width:100%; cursor:pointer; font-size:16px;}
   </style>
 </head>
 <body>
   <div class="card">
     <h2>🌐 Website Cost Estimator</h2>
     <p>Get instant quote for your website project</p>
+    
+    <label>Your Name:
+      <input id="clientName" type="text" placeholder="Enter your name" required>
+    </label>
+
+    <label>Your Email:
+      <input id="clientEmail" type="email" placeholder="Enter your email" required>
+    </label>
     
     <label>Website Type:
       <select id="type">
@@ -73,6 +83,9 @@
     
     <div class="breakdown" id="breakdown"></div>
     
+    <p style="background:#fef3c7; padding:10px; border-radius:8px; font-weight:bold;">Pay 50% Deposit: ₦<span id="deposit">0</span> to Start</p>
+    
+    <button class="paystack" onclick="payWithPaystack()">💳 Pay 50% Deposit with Paystack</button>
     <a id="whatsapp" href="#" class="whatsapp">📱 Send Quote to WhatsApp</a>
   </div>
 
@@ -81,6 +94,9 @@
   </div>
 
 <script>
+let globalTotal = 0;
+let globalBreakdown = [];
+
 function calculate(){
   let total = 0;
   let breakdown = [];
@@ -112,12 +128,67 @@ function calculate(){
     }
   });
   
+  globalTotal = total;
+  globalBreakdown = breakdown;
+  
+  let deposit = Math.round(total * 0.5); // 50%
+  
   document.getElementById('total').innerText = total.toLocaleString();
+  document.getElementById('deposit').innerText = deposit.toLocaleString();
   document.getElementById('breakdown').innerHTML = breakdown.map(b => `✓ ${b}`).join('<br>');
   document.getElementById('result').style.display = 'block';
   
-  let msg = `Hi Alexander, I need a website. Details: ${breakdown.join(', ')}. Total: ₦${total.toLocaleString()}`;
+  let msg = `Hi Alexander, I need a website. Details: ${breakdown.join(', ')}. Total: ₦${total.toLocaleString()}. 50% Deposit: ₦${deposit.toLocaleString()}`;
   document.getElementById('whatsapp').href = `https://wa.me/2347031257305?text=${encodeURIComponent(msg)}`;
+}
+
+function payWithPaystack() {
+  let name = document.getElementById('clientName').value;
+  let email = document.getElementById('clientEmail').value;
+  
+  if(!name || !email){
+    alert("Please enter your Name and Email first");
+    return;
+  }
+  
+  let deposit = Math.round(globalTotal * 0.5); // 50%
+  
+  let handler = PaystackPop.setup({
+    key: 'pk_test_xxxxxxxxxxxxxxxx', // REPLACE WITH YOUR PAYSTACK PUBLIC KEY
+    email: email,
+    amount: deposit * 100, // Paystack uses kobo. So ₦100 = 10000
+    currency: "NGN",
+    ref: 'WEB' + Math.floor(Math.random() * 1000000 + 1), // unique ref
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Client Name",
+          variable_name: "client_name",
+          value: name
+        },
+        {
+          display_name: "Project Details",
+          variable_name: "project_details",
+          value: globalBreakdown.join(', ')
+        },
+        {
+          display_name: "Total Quote",
+          variable_name: "total_quote",
+          value: "₦" + globalTotal.toLocaleString()
+        }
+      ]
+    },
+    callback: function(response){
+      alert('Payment Successful! Reference: ' + response.reference + '\nI will contact you to start your project.');
+      // Send to WhatsApp after payment
+      let successMsg = `Hi Alexander, I just paid 50% deposit of ₦${deposit.toLocaleString()}. Ref: ${response.reference}. Project: ${globalBreakdown.join(', ')}`;
+      window.open(`https://wa.me/2347031257305?text=${encodeURIComponent(successMsg)}`, '_blank');
+    },
+    onClose: function(){
+      alert('Payment window closed.');
+    }
+  });
+  handler.openIframe();
 }
 </script>
 </body>
