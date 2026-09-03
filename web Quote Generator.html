@@ -3,7 +3,7 @@
 <head>
   <title>Website Cost Estimator | Alexander</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://js.paystack.co/v1/inline.js"></script> <!-- Paystack Script -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     body{font-family:Arial; max-width:650px; margin:auto; padding:20px; background:#eff6ff;}
     h2{text-align:center; color:#1d4ed8;}
@@ -17,6 +17,8 @@
     .breakdown{text-align:left; margin:15px 0;}
     .whatsapp{display:block; background:#25D366; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px;}
     .paystack{display:block; background:#00C3F3; color:#fff; padding:14px; text-align:center; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px; border:none; width:100%; cursor:pointer; font-size:16px;}
+    .paystack:disabled{background:#94a3b8; cursor:not-allowed;}
+    #payStatus{text-align:center; margin-top:10px; font-size:14px; font-weight:bold;}
   </style>
 </head>
 <body>
@@ -85,12 +87,13 @@
     
     <p style="background:#fef3c7; padding:10px; border-radius:8px; font-weight:bold;">Pay 50% Deposit: ₦<span id="deposit">0</span> to Start</p>
     
-    <button class="paystack" onclick="payWithPaystack()">💳 Pay 50% Deposit with Paystack</button>
-    <a id="whatsapp" href="#" class="whatsapp">📱 Send Quote to WhatsApp</a>
+    <button class="paystack" id="payBtn" onclick="payWithPaystack()">💳 Pay 50% Deposit with Paystack</button>
+    <a id="whatsapp" href="#" target="_blank" rel="noopener" class="whatsapp">📱 Send Quote to WhatsApp</a>
+    <p id="payStatus"></p>
   </div>
 
   <div style="text-align:center; margin-top:20px;">
-    <a href="/" style="color:#1d4ed8;">← Back to Portfolio</a>
+    <a href="index.html" style="color:#1d4ed8;">← Back to Portfolio</a>
   </div>
 
 <script>
@@ -101,13 +104,11 @@ function calculate(){
   let total = 0;
   let breakdown = [];
   
-  // Website Type
   let type = parseInt(document.getElementById('type').value);
   let typeName = document.getElementById('type').options[document.getElementById('type').selectedIndex].text;
   total += type;
   breakdown.push(typeName);
   
-  // Pages
   let pages = parseInt(document.getElementById('pages').value);
   if(pages > 5){
     let extra = (pages - 5) * 10000;
@@ -117,7 +118,6 @@ function calculate(){
     breakdown.push(`${pages} Pages: Included`);
   }
   
-  // All other dropdowns
   let items = ["logo", "hosting", "seo", "whatsappBtn"];
   items.forEach(id => {
     let val = parseInt(document.getElementById(id).value);
@@ -130,8 +130,7 @@ function calculate(){
   
   globalTotal = total;
   globalBreakdown = breakdown;
-  
-  let deposit = Math.round(total * 0.5); // 50%
+  let deposit = Math.round(total * 0.5);
   
   document.getElementById('total').innerText = total.toLocaleString();
   document.getElementById('deposit').innerText = deposit.toLocaleString();
@@ -143,49 +142,54 @@ function calculate(){
 }
 
 function payWithPaystack() {
-  let name = document.getElementById('clientName').value;
-  let email = document.getElementById('clientEmail').value;
+  let name = document.getElementById('clientName').value.trim();
+  let email = document.getElementById('clientEmail').value.trim();
+  let payBtn = document.getElementById('payBtn');
+  let status = document.getElementById('payStatus');
   
   if(!name || !email){
-    alert("Please enter your Name and Email first");
+    status.innerText = "⚠️ Please enter your Name and Email first";
+    status.style.color = "#dc2626";
     return;
   }
   
-  let deposit = Math.round(globalTotal * 0.5); // 50%
+  let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailPattern.test(email)){
+    status.innerText = "⚠️ Please enter a valid email address";
+    status.style.color = "#dc2626";
+    return;
+  }
+  
+  let deposit = Math.round(globalTotal * 0.5);
+  
+  payBtn.disabled = true;
+  status.innerText = "Opening payment window...";
+  status.style.color = "#1d4ed8";
   
   let handler = PaystackPop.setup({
-    key: 'pk_test_xxxxxxxxxxxxxxxx', // REPLACE WITH YOUR PAYSTACK PUBLIC KEY
+    key: 'pk_test_073da49110ff92bda2200e8418be9ededab11dde', // YOUR TEST KEY
     email: email,
-    amount: deposit * 100, // Paystack uses kobo. So ₦100 = 10000
+    amount: deposit * 100, // kobo
     currency: "NGN",
-    ref: 'WEB' + Math.floor(Math.random() * 1000000 + 1), // unique ref
+    ref: 'WEB_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
     metadata: {
       custom_fields: [
-        {
-          display_name: "Client Name",
-          variable_name: "client_name",
-          value: name
-        },
-        {
-          display_name: "Project Details",
-          variable_name: "project_details",
-          value: globalBreakdown.join(', ')
-        },
-        {
-          display_name: "Total Quote",
-          variable_name: "total_quote",
-          value: "₦" + globalTotal.toLocaleString()
-        }
+        {display_name: "Client Name", variable_name: "client_name", value: name},
+        {display_name: "Project Details", variable_name: "project_details", value: globalBreakdown.join(', ')},
+        {display_name: "Total Quote", variable_name: "total_quote", value: "₦" + globalTotal.toLocaleString()}
       ]
     },
     callback: function(response){
-      alert('Payment Successful! Reference: ' + response.reference + '\nI will contact you to start your project.');
-      // Send to WhatsApp after payment
-      let successMsg = `Hi Alexander, I just paid 50% deposit of ₦${deposit.toLocaleString()}. Ref: ${response.reference}. Project: ${globalBreakdown.join(', ')}`;
+      payBtn.disabled = false;
+      status.innerText = '✅ Payment Successful! Ref: ' + response.reference;
+      status.style.color = "#16a34a";
+      let successMsg = `Hi Alexander, I just paid 50% deposit of ₦${deposit.toLocaleString()}.%0ARef: ${response.reference}%0AProject: ${globalBreakdown.join(', ')}`;
       window.open(`https://wa.me/2347031257305?text=${encodeURIComponent(successMsg)}`, '_blank');
     },
     onClose: function(){
-      alert('Payment window closed.');
+      payBtn.disabled = false;
+      status.innerText = 'Payment window closed.';
+      status.style.color = "#64748b";
     }
   });
   handler.openIframe();
